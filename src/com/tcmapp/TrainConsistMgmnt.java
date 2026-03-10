@@ -3,72 +3,69 @@
  * MAIN CLASS – TrainConsistMgmnt
  * ================================================================
  *
- * Use Case 10: Count Total Seats
+ * Use Case 11: Validate Train ID & Cargo Codes (Regex)
  *
  * Description:
- * This class demonstrates how to calculate the total
- * seating capacity of all bogies combined using Java
- * Stream API and aggregation.
+ * This class validates Train IDs and Cargo Codes using
+ * Regular Expressions (Regex). It ensures that only
+ * correctly formatted values are accepted before further
+ * processing.
  *
  * At this stage, the application:
- * - Creates a list of bogies
- * - Maps bogie capacities
- * - Sums capacities to get total seats
- * - Displays the total seating capacity
+ * - Accepts Train ID and Cargo Code inputs
+ * - Validates formats using Regex
+ * - Displays whether inputs are valid or invalid
  *
- * This maps aggregation using Streams.
+ * This maps input validation using Pattern and Matcher.
  *
  * @author Developer
- * @version 10.0
+ * @version 11.0
  */
 package com.tcmapp;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TrainConsistMgmnt {
 
-    // Inner Bogie class to model passenger bogies
-    static class Bogie {
-        String name;
-        int capacity;
-
-        Bogie(String name, int capacity) {
-            this.name = name;
-            this.capacity = capacity;
-        }
-
-        @Override
-        public String toString() {
-            return name + " -> " + capacity;
-        }
-    }
-
     public static void main(String[] args) {
 
-        System.out.println("==================================================");
-        System.out.println(" UC10 - Count Total Seats ");
-        System.out.println("==================================================\n");
+        System.out.println("===========================================");
+        System.out.println(" UC11 - Validate Train ID and Cargo Code ");
+        System.out.println("===========================================\n");
 
-        // Create list of bogies
-        List<Bogie> bogies = new ArrayList<>();
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("General", 90));
+        Scanner sc = new Scanner(System.in);
 
-        System.out.println("All Bogies:");
-        for (Bogie b : bogies) {
-            System.out.println(b);
-        }
+        // Regex for Train ID: TRN- followed by 4 digits
+        String trainIdPattern = "^TRN-\\d{4}$";
 
-        // ---- AGGREGATE total capacity ----
-        int totalSeats = bogies.stream()
-                               .mapToInt(b -> b.capacity)
-                               .sum();
+        // Regex for Cargo Code: PET- followed by two uppercase letters
+        String cargoCodePattern = "^PET-[A-Z]{2}$";
 
-        System.out.println("\nTotal Seats in Train Formation: " + totalSeats);
+        // Input from user
+        System.out.print("Enter Train ID (Format: TRN-1234): ");
+        String trainId = sc.nextLine();
 
-        System.out.println("\nUC10 seat counting completed...");
+        System.out.print("Enter Cargo Code (Format: PET-AB): ");
+        String cargoCode = sc.nextLine();
+
+        // Validate Train ID
+        Pattern trainPattern = Pattern.compile(trainIdPattern);
+        Matcher trainMatcher = trainPattern.matcher(trainId);
+        boolean trainValid = trainMatcher.matches();
+
+        // Validate Cargo Code
+        Pattern cargoPattern = Pattern.compile(cargoCodePattern);
+        Matcher cargoMatcher = cargoPattern.matcher(cargoCode);
+        boolean cargoValid = cargoMatcher.matches();
+
+        // Display results
+        System.out.println("\nValidation Results:");
+        System.out.println("Train ID Valid: " + trainValid);
+        System.out.println("Cargo Code Valid: " + cargoValid);
+
+        System.out.println("\nUC11 validation completed...");
+        sc.close();
     }
 }
