@@ -3,69 +3,74 @@
  * MAIN CLASS – TrainConsistMgmnt
  * ================================================================
  *
- * Use Case 11: Validate Train ID & Cargo Codes (Regex)
+ * Use Case 12: Safety Compliance Check for Goods Bogies
  *
  * Description:
- * This class validates Train IDs and Cargo Codes using
- * Regular Expressions (Regex). It ensures that only
- * correctly formatted values are accepted before further
- * processing.
+ * This class validates goods bogies against safety rules
+ * using Java Streams and lambda expressions. It ensures
+ * that cylindrical bogies only carry petroleum, preventing
+ * unsafe cargo assignments.
  *
  * At this stage, the application:
- * - Accepts Train ID and Cargo Code inputs
- * - Validates formats using Regex
- * - Displays whether inputs are valid or invalid
+ * - Creates a list of goods bogies
+ * - Converts list into stream
+ * - Applies safety rules using allMatch()
+ * - Displays whether train formation is compliant
  *
- * This maps input validation using Pattern and Matcher.
+ * This maps safety compliance using Streams and conditional logic.
  *
  * @author Developer
- * @version 11.0
+ * @version 12.0
  */
 package com.tcmapp;
 
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrainConsistMgmnt {
 
+    // Inner GoodsBogie class to model goods bogies
+    static class GoodsBogie {
+        String type;   // e.g., Cylindrical, Box, Flatbed
+        String cargo;  // e.g., Petroleum, Coal, Grain
+
+        GoodsBogie(String type, String cargo) {
+            this.type = type;
+            this.cargo = cargo;
+        }
+
+        @Override
+        public String toString() {
+            return type + " -> " + cargo;
+        }
+    }
+
     public static void main(String[] args) {
 
-        System.out.println("===========================================");
-        System.out.println(" UC11 - Validate Train ID and Cargo Code ");
-        System.out.println("===========================================\n");
+        System.out.println("==================================================");
+        System.out.println(" UC12 - Safety Compliance Check for Goods Bogies ");
+        System.out.println("==================================================\n");
 
-        Scanner sc = new Scanner(System.in);
+        // Create list of goods bogies
+        List<GoodsBogie> bogies = new ArrayList<>();
+        bogies.add(new GoodsBogie("Cylindrical", "Petroleum")); // valid
+        bogies.add(new GoodsBogie("Box", "Coal"));              // valid
+        bogies.add(new GoodsBogie("Flatbed", "Grain"));         // valid
+        bogies.add(new GoodsBogie("Cylindrical", "Coal"));      // invalid
 
-        // Regex for Train ID: TRN- followed by 4 digits
-        String trainIdPattern = "^TRN-\\d{4}$";
+        System.out.println("All Goods Bogies:");
+        for (GoodsBogie b : bogies) {
+            System.out.println(b);
+        }
 
-        // Regex for Cargo Code: PET- followed by two uppercase letters
-        String cargoCodePattern = "^PET-[A-Z]{2}$";
+        // ---- SAFETY COMPLIANCE CHECK ----
+        boolean isSafe = bogies.stream().allMatch(b ->
+                !(b.type.equals("Cylindrical") && !b.cargo.equals("Petroleum"))
+        );
 
-        // Input from user
-        System.out.print("Enter Train ID (Format: TRN-1234): ");
-        String trainId = sc.nextLine();
+        System.out.println("\nSafety Compliance Result:");
+        System.out.println("Train Formation Safe: " + isSafe);
 
-        System.out.print("Enter Cargo Code (Format: PET-AB): ");
-        String cargoCode = sc.nextLine();
-
-        // Validate Train ID
-        Pattern trainPattern = Pattern.compile(trainIdPattern);
-        Matcher trainMatcher = trainPattern.matcher(trainId);
-        boolean trainValid = trainMatcher.matches();
-
-        // Validate Cargo Code
-        Pattern cargoPattern = Pattern.compile(cargoCodePattern);
-        Matcher cargoMatcher = cargoPattern.matcher(cargoCode);
-        boolean cargoValid = cargoMatcher.matches();
-
-        // Display results
-        System.out.println("\nValidation Results:");
-        System.out.println("Train ID Valid: " + trainValid);
-        System.out.println("Cargo Code Valid: " + cargoValid);
-
-        System.out.println("\nUC11 validation completed...");
-        sc.close();
+        System.out.println("\nUC12 safety compliance check completed...");
     }
 }
