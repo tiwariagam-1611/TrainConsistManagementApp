@@ -3,49 +3,73 @@
  * MAIN CLASS – TrainConsistMgmnt
  * ================================================================
  *
- * Use Case 6: Map Bogie to Capacity
+ * Use Case 7: Sort Bogies by Capacity (Comparator)
  *
  * Description:
- * This class demonstrates how to associate bogie types
- * with their seating or load capacities using HashMap.
+ * This class demonstrates how to sort passenger bogies
+ * by their seating capacity using a custom Comparator.
  *
  * At this stage, the application:
- * - Stores bogie types as keys
- * - Maps each bogie to its capacity
- * - Displays bogie-capacity details
+ * - Models bogies with name and capacity
+ * - Displays bogies before sorting
+ * - Sorts bogies by capacity in ascending order
+ * - Displays bogies after sorting
  *
- * This maps key-value relationships using HashMap.
+ * This maps custom ordering using Comparator.
  *
  * @author Developer
- * @version 6.0
+ * @version 7.0
  */
 package com.tcmapp;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class TrainConsistMgmnt {
 
-    public static void main(String[] args) {
+    // Inner Bogie class to model passenger bogies
+    static class Bogie {
+        String name;
+        int capacity;
 
-        System.out.println("==================================================");
-        System.out.println(" UC6 - Map Bogie to Capacity (HashMap) ");
-        System.out.println("==================================================\n");
-
-        // Create a HashMap to map bogie type to capacity
-        Map<String, Integer> bogieCapacity = new HashMap<>();
-
-        // ---- CREATE (Add bogie-capacity pairs) ----
-        bogieCapacity.put("First Class", 24);
-        bogieCapacity.put("Cargo", 120);
-        bogieCapacity.put("Sleeper", 72);
-        bogieCapacity.put("AC Chair", 56);
-
-        System.out.println("Bogie Capacity Details:");
-        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        Bogie(String name, int capacity) {
+            this.name = name;
+            this.capacity = capacity;
         }
 
-        System.out.println("\nUC6 bogie-capacity mapping completed...");
+        @Override
+        public String toString() {
+            return name + " -> " + capacity;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println("===========================================");
+        System.out.println(" UC7 - Sort Bogies by Capacity (Comparator) ");
+        System.out.println("===========================================\n");
+
+        // Create list of passenger bogies
+        List<Bogie> bogies = new ArrayList<>();
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("First Class", 24));
+        bogies.add(new Bogie("General", 90));
+
+        System.out.println("Before Sorting:");
+        for (Bogie b : bogies) {
+            System.out.println(b);
+        }
+
+        // ---- SORT using Comparator ----
+        bogies.sort(Comparator.comparingInt(b -> b.capacity));
+
+        System.out.println("\nAfter Sorting by Capacity:");
+        for (Bogie b : bogies) {
+            System.out.println(b);
+        }
+
+        System.out.println("\nUC7 sorting completed...");
     }
 }
